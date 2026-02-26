@@ -47,8 +47,6 @@ fn main() -> Result<(), eyre::Report> {
     let (choose_n, total) = {
         let mut files = files.lock().unwrap();
 
-        files.shuffle(&mut rng);
-
         // I can't be bothered
         #[allow(
             clippy::cast_precision_loss,
@@ -60,7 +58,9 @@ fn main() -> Result<(), eyre::Report> {
             |n| *n.min(&files.len()),
         );
 
-        for f in files.iter().take(choose_n) {
+        let (shuffled, _) = files.partial_shuffle(&mut rng, choose_n);
+
+        for f in shuffled {
             println!("{}", f.path().display());
         }
 
